@@ -83,7 +83,8 @@
         </div>
         <div class="task-form">
           <input type="text" id="task-subject" placeholder="Subject (e.g. Math)" />
-          <input type="date" id="task-deadline" />
+          <label for="task-subject" class="sr-only">Task or Subject</label>
+          <input type="text" id="task-subject" placeholder="Task / Subject" />
           <button class="btn-green" onclick="addTask()">+ Add Task</button>
         </div>
 
@@ -105,7 +106,7 @@
         </div>
 
         <!-- Timer display -->
-        <div class="timer-display" id="timer-display" style="display:none;">
+        <div class="timer-display" id="timer-display">
           <span id="timer-count">00:00</span>
         </div>
 
@@ -127,7 +128,7 @@
         <div class="recommendation-text" id="recommendation-text">
           Loading your recommendation...
         </div>
-        <p style="font-size:0.78rem;color:var(--text-light);margin-top:1rem;">
+        <p class="recommend-text">
           Updates based on your screen time, tasks & fitness.
         </p>
       </div>

@@ -704,3 +704,13 @@ h3 {
   box-shadow: var(--shadow);
   font-size: 0.95rem;
 }
+
+.timer-display {
+  display: none;
+}
+
+.recommend-text {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-top: 1rem;
+}

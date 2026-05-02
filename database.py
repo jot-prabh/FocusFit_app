@@ -91,23 +91,46 @@ def get_user_by_email(email):
 
 # ── Screen time helpers ───────────────────────────────────────────────────
 
+from datetime import date
+
 def add_screen_time(user_id, minutes):
+    today = date.today().isoformat()
     conn = get_db()
-    conn.execute(
-        "INSERT INTO screen_time (user_id, minutes) VALUES (?, ?)",
-        (user_id, minutes)
-    )
+
+    existing = conn.execute(
+        "SELECT id, minutes FROM screen_time WHERE user_id = ? AND logged_on = ?",
+        (user_id, today)
+    ).fetchone()
+
+    if existing:
+        new_total = existing["minutes"] + minutes
+        if new_total > 1440:
+            new_total = 1440
+
+        conn.execute(
+            "UPDATE screen_time SET minutes = ? WHERE id = ?",
+            (new_total, existing["id"])
+        )
+    else:
+        conn.execute(
+            "INSERT INTO screen_time (user_id, minutes, logged_on) VALUES (?, ?, ?)",
+            (user_id, minutes, today)
+        )
+
     conn.commit()
     conn.close()
 
-def get_screen_time_log(user_id):
+def get_today_screen_time(user_id):
+    today = date.today().isoformat()
     conn = get_db()
-    rows = conn.execute(
-        "SELECT minutes, logged_on FROM screen_time WHERE user_id = ? ORDER BY id ASC",
-        (user_id,)
-    ).fetchall()
+
+    row = conn.execute(
+        "SELECT minutes FROM screen_time WHERE user_id = ? AND logged_on = ?",
+        (user_id, today)
+    ).fetchone()
+
     conn.close()
-    return [dict(r) for r in rows]
+    return row["minutes"] if row else 0
 
 from datetime import date
 
@@ -320,3 +343,11 @@ def calculate_streak(user_id):
             break
 
     return streak
+def get_screen_time_log(user_id):
+    conn = get_db()
+    rows = conn.execute(
+        "SELECT minutes, logged_on FROM screen_time WHERE user_id = ? ORDER BY logged_on",
+        (user_id,)
+    ).fetchall()
+    conn.close()
+    return rows
