@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-DATABASE = "focusfit.db"
+DATABASE = "focusfit_db"
 
 def get_db():
     """Open a connection to the database."""
